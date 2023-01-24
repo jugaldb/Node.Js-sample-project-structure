@@ -9,9 +9,9 @@ const userRegister = (req, res, next) => {
 		.exec()
 		.then((user) => {
 			if (user.length >= 1) {
-        res.status(409).json({
-          message:"Email Exists"
-        })
+				res.status(409).json({
+					message: "Email Exists"
+				})
 			} else {
 				bcrypt.hash(req.body.password, 10, (err, hash) => {
 					if (err) {
@@ -23,8 +23,8 @@ const userRegister = (req, res, next) => {
 							_id: new mongoose.Types.ObjectId(),
 							email: req.body.email,
 							password: hash,
-              name: req.body.name,
-              phone_number: req.body.phone_number
+							name: req.body.name,
+							phone_number: req.body.phone_number
 						});
 						user
 							.save()
@@ -32,39 +32,39 @@ const userRegister = (req, res, next) => {
 								await result
 									.save()
 									.then((result1) => {
-                      console.log(`User created ${result}`)
-                      res.status(201).json({
-                        userDetails: {
-                          userId: result._id,
-                          email: result.email,
-                          name: result.name,
-                          phone_number: result.phone_number,
-                        },
-                      })
+										console.log(`User created ${result}`)
+										res.status(201).json({
+											userDetails: {
+												userId: result._id,
+												email: result.email,
+												name: result.name,
+												phone_number: result.phone_number,
+											},
+										})
 									})
 									.catch((err) => {
-                    console.log(err)
-                    res.status(400).json({
-                      message: err.toString()
-                    })
+										console.log(err)
+										res.status(400).json({
+											message: err.toString()
+										})
 									});
 							})
 							.catch((err) => {
-                console.log(err)
-                res.status(500).json({
-                  message: err.toString()
-                })
+								console.log(err)
+								res.status(500).json({
+									message: err.toString()
+								})
 							});
 					}
 				});
 			}
 		})
 		.catch((err) => {
-      console.log(err)
-      res.status(500).json({
-        message: err.toString()
-      })
-    });
+			console.log(err)
+			res.status(500).json({
+				message: err.toString()
+			})
+		});
 }
 
 
@@ -72,7 +72,7 @@ const userLogin = (req, res, next) => {
 	User.find({ email: req.body.email })
 		.exec()
 		.then((user) => {
-      console.log(user)
+			console.log(user)
 			if (user.length < 1) {
 				return res.status(401).json({
 					message: "Auth failed: Email not found probably",
@@ -80,7 +80,7 @@ const userLogin = (req, res, next) => {
 			}
 			bcrypt.compare(req.body.password, user[0].password, (err, result) => {
 				if (err) {
-          console.log(err)
+					console.log(err)
 					return res.status(401).json({
 						message: "Auth failed",
 					});
@@ -88,7 +88,7 @@ const userLogin = (req, res, next) => {
 				if (result) {
 					const token = jwt.sign(
 						{
-              userId: user[0]._id,
+							userId: user[0]._id,
 							email: user[0].email,
 							name: user[0].name,
 							phone_number: user[0].phone_number,
@@ -97,8 +97,8 @@ const userLogin = (req, res, next) => {
 						{
 							expiresIn: "1d",
 						}
-          );
-          console.log(user[0])
+					);
+					console.log(user[0])
 					return res.status(200).json({
 						message: "Auth successful",
 						userDetails: {
@@ -138,7 +138,7 @@ const getMe = async (req, res) => {
 };
 
 module.exports = {
-  userLogin,
-  userRegister,
+	userLogin,
+	userRegister,
 	getMe,
 };
